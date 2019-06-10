@@ -1,6 +1,6 @@
 import urllib.request
 import urllib.parse
-open_file = open("/Users/mohanedmashaly/Desktop/python projects/movie_quotes/movie_quotes.txt")
+open_file = open("/Users/UserName.path/")
 reader = open_file.read()
 y = reader.split()
 for i in y:

@@ -1,0 +1,26 @@
+{% extends "Base.html" %}
+<!DOCTYPE html>
+<html>
+<head>
+{% block content %}
+<title>Blog</title>
+<head/>
+<body>
+<h3>new post</h3>
+<form method = "post">
+<h5>Subject</h5>
+<input type="text" name = "Subject"/>
+<a>{{SubjectError}}</a>
+<br>
+<h5>blog</h5>
+<textarea name = "BlogBody">{{BlogBody}}</textarea>
+<a>{{BodyError}}</a>
+<br>
+<h5>Attach any Further images if you want</h5>
+<input type="image"/>
+<br>
+<input type = "sumbit"/>
+</form>
+</body>
+</html>
+{% endblock %}

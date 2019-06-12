@@ -16,16 +16,20 @@ class Home(Handler):
     def get(self):
         self.render("Blog.html")
     def post(self):
+        Err = False
         Body_Error = ""
         Subject_Error = ""
-        Body = self.get.request("BlogBody")
-        Subject = self.get.request("Subject")
+        Error = " "
+        Body = self.request.get("BlogBody")
+        Subject = self.request.get("Subject")
         if not Body :
                 Body_Error = "Body is missing"
+                Err = True
         if not Subject:
                 Subject_Error = "Subject is missing"
-        if Subject and Body :
-                self.render("Blog.html",BlogBody = Body,Subject = Subject,
+                Err = True
+        if Err:
+                self.render("Blog.html",Blog = Body,Subject = Subject,
                 BodyError = Body_Error,SubjectError = Subject_Error)
 
 app = webapp2.WSGIApplication([('/Blog',Home)], debug=True)

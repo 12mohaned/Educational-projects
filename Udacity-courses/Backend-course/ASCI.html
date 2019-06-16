@@ -16,9 +16,6 @@
 <input type="submit" />
 <br>
 <br>
-<ul>
-<a>{{Art}}</a>
-</ul>
 </form>
 <hr>
 {% for user in arts %}
@@ -27,5 +24,11 @@
 <pre class = "Art-body">{{user.art}}</pre>
 </div>
 {% endfor %}
+{% if art %}
+{% for i in art %}
+<h5>art</h5>
+<li>{{i}}</li>
+{% endfor %}
+{% endif %}
 </body>
 </html>

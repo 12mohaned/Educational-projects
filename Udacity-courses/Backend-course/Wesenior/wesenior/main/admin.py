@@ -5,11 +5,11 @@ from django.contrib import admin
 from .models import Tutor ,Majors, Courses
 # Register your models here.
 class TutorAdmin(admin.ModelAdmin):
-    fields = ["tutor_name","tutor_age","tutor_bio"]
+    fields = ["tutor_name","tutor_age","tutor_bio","course_name"]
 admin.site.register(Tutor,TutorAdmin)
 class MajorAdmin(admin.ModelAdmin):
     fields = ["Major_name","Major_Info","Tutors_slug","Courses_slug"]
 admin.site.register(Majors,MajorAdmin)
 class CoursesAdmin(admin.ModelAdmin):
-    fields = ["Course_name","Course_content","Reserve_slug","Recommend_slug"]
+    fields = ["Course_name","Course_content","Reserve_slug","Recommend_slug","Majorname"]
 admin.site.register(Courses,CoursesAdmin)

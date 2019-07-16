@@ -8,7 +8,13 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from .forms import NewUserForm, TutorForm
-
+def single_slug(request, single_slug):
+    Tutors = [m.Tutors_slug for m in Majors.objects.all()]
+    if single_slug in Tutors :
+        return HttpResponse("Hello")
+    courses = [c.Courses_slug for c in Majors.objects.all()]
+    if single_slug in courses:
+        return HttpResponse("Bello")
 def homepage(request):
         return render(request = request,template_name = 'main/home.html',
                   context ={"majors":Majors.objects.all})
@@ -65,3 +71,5 @@ def BecomeaTutor(request):
                 print(form.error_messages[msg])
     form = TutorForm
     return render(request,"main/become_a_tutor.html",context = {"form":form})
+def Tutor(request, Major):
+    return render(request,"main/tutors.html",context = {"majors":Majors.objects.all})

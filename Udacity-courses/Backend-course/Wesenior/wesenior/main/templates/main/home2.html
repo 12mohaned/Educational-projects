@@ -1,0 +1,44 @@
+{% extends "main/Base.html" %}
+{% block content %}
+<div class="row">
+  <div class="col m4">
+    <div class="card">
+      <div class="card-image">
+        {% load static %}
+        <img src = "{% static "main/Vision.jpg" %}" alt = "Whatdowedo">
+                <span class="card-title" style="width:100%; background: rgba(0, 0, 0, 0.5);">Vision</span>
+      </div>
+      <div class="card-content">
+        <p>To show every Frustrated Student there's always a better and easier way.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col m4">
+    <div class="card">
+      <div class="card-image">
+        {% load static %}
+        <img src = "{% static "main/our-mission.jpg" %}" alt = "Whatdowedo">
+      <span class="card-title" style="width:100%; background: rgba(0, 0, 0, 0.5);">Mission</span>
+      </div>
+      <div class="card-content">
+        <p>Provide 100% Free Tutoring Service for Students on their College Campus, it's a win to win situtaion for both the student whom
+        will learn and the tutor as the say goes "when one teaches two learns"</p>
+      </div>
+    </div>
+  </div>
+  <div class="col m4">
+    <div class="card">
+      <div class="card-image">
+        {% load static %}
+        <img src = "{% static "main/HowCanWeHelp.png" %}" alt = "Whatdowedo">
+        <span class="card-title" style="width:100%; background: rgba(0, 0, 0, 0.5);">What Do we Do </span>
+      </div>
+      <div class="card-content">
+        <p>A free Tutoring Service for all GUC students where Student can reserve timing based on the Available timings
+for the Tutor and recieve confirmtaion and meet at the uni</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

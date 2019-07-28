@@ -1,0 +1,20 @@
+{% extends "main/Base.html" %}
+{% block content %}
+{% for i in majors%}
+  <div class="row">
+  <div class="col s20 m20">
+  <div class="card grey darken-1">
+    <div class="card-content white-text">
+      <span class="card-title">{{i.Major_name}}</span>
+      <p>{{i.Major_Info}}</p>
+    </div>
+
+    <div class="card-action">
+      <a href ="{{i.Tutors_slug}}"> <button class = "btn orange lighten-1">View Available Tutors</button></a>
+      <a href ="{{i.Courses_slug}}"> <button class = "btn orange lighten-1">View Available Courses</button></a>
+    </div>
+  </div>
+  </div>
+</div>
+{% endfor %}
+{% endblock %}

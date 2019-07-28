@@ -27,5 +27,13 @@ urlpatterns = [
     #url("<single_slug>",views.single_slug,name = "single_slug"),
     #url("courses",views.courses,name = "courses"),
     url("become_a_tutor",views.BecomeaTutor,name = "BecomeaTutor"),
-    url("home",views.homepage2,name = "homepage2")
+    url("home",views.homepage2,name = "homepage2"),
+    url("MET/Courses",views.Courses_url,name = "METCoursesURL"),
+    url("PBT/Courses",views.Courses_url,name = "PBTCoursesURL"),
+    url("AAS/Courses",views.Courses_url,name = "AASCoursesURL"),
+    url("MGT/Courses",views.Courses_url,name = "MGTCoursesURL"),
+    url("MET/Tutors",views.Tutors_url,name= "METTutorsURL"),
+    url("PBT/Tutors",views.Tutors_url,name= "PBTTutorsURL"),
+    url("AAS/Tutors",views.Tutors_url,name= "AASTutorsURL"),
+    url("MGT/Tutors",views.Tutors_url,name= "MGTTutorsURL"),
 ]

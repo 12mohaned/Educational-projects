@@ -8,13 +8,21 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from .forms import NewUserForm, TutorForm
+def Tutors_url(request):
+    return render(request, template_name='main/tutors.html',context = {"Tutors":  Tutor.objects.all})
+def Courses_url(request):
+    return render(request, template_name='main/courses.html',context = {"Courses" :Courses.objects.all,"request":request})
 def single_slug(request, single_slug):
-    Tutors = [m.Tutors_slug for m in Majors.objects.all()]
-    if single_slug in Tutors :
+    Tutors = [m.Tutors_slug  for m in Majors.objects.all()]
+    if single_slug in Tutors:
         return HttpResponse("Hello")
+    else :
+        return HttpResponse("Bye")
     courses = [c.Courses_slug for c in Majors.objects.all()]
     if single_slug in courses:
         return HttpResponse("Bello")
+    else :
+        return HttpResponse("Bye")
 def homepage(request):
         return render(request = request,template_name = 'main/home.html',
                   context ={"majors":Majors.objects.all})
@@ -50,7 +58,7 @@ def login_request(request):
                login(request, user)
                return redirect('main:homepage')
            else:
-              return ""
+               return HttpResponse("Sorry")
        else:
            return ""
    form = AuthenticationForm()

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ASCI Drawings</title>
+</head>
+<body>
+<h1>ASCI</h1>
+<form method="post">
+<div>ASCI</div>
+<input type="text" name = "title" value="{{Title}}"/>
+<br>
+<div>Your Art</div>
+<textarea name = "art">{{Art}}</textarea>
+<a style  ="color:red;" >{{error}}</a>
+<br>
+<input type="submit" />
+<br>
+<br>
+</form>
+<hr>
+{% for user in arts %}
+<div class = "Art">
+<div class = "Art-title">{{user.title}}</div>
+<pre class = "Art-body">{{user.art}}</pre>
+</div>
+{% endfor %}
+{% if art %}
+{% for i in art %}
+<h5>art</h5>
+<li>{{i}}</li>
+{% endfor %}
+{% endif %}
+</body>
+</html>

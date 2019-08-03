@@ -19,11 +19,11 @@ Featured = new ArrayList<JButton>();
 /* 
  * this method responsible for loading the featured memes from the local drive where the loop add the images in Featured ArrayList*/
 private void loadFeaturedMemes() throws IOException {
-Featured_counter = new File("/Users/mohanedmashaly/eclipse-workspace/MemeMaker").list().length;
-File[] Memespath = new File("/Users/mohanedmashaly/eclipse-workspace/MemeMaker").listFiles();
+Featured_counter = new File("/User/user/path").list().length;
+File[] Memespath = new File("/Users/user/path").listFiles();
 	for(int i =0; i < Featured_counter;i++) {
 		String Image = Memespath[i].getName();
-		File FileToRead = new File("/Users/mohanedmashaly/eclipse-workspace/MemeMaker/"+Image);
+		File FileToRead = new File("/Users/user/path"+Image);
 		Image Meme = ImageIO.read(FileToRead);
 		JButton B = new JButton();
 		B.setIcon(new ImageIcon(Meme));

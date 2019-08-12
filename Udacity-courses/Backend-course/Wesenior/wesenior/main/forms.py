@@ -19,7 +19,6 @@ class TutorForm(UserCreationForm):
     Major=forms.CharField(label = 'Major name(MGT,MET,Pharmacy and Bio Technology,Applied Arts)',required = True)
     age  = forms.IntegerField(label = 'Age',required = True)
     Bio  = forms.CharField(label = "Tell us more about you",required = True)
-
     class Meta :
         model = User
         fields = ("username","password1","password2","email","Major","age","Bio")
@@ -33,3 +32,6 @@ class TutorForm(UserCreationForm):
         if commit :
             user.save()
         return user
+Tutors = [tuple([i.tutor_name.capitalize(),i.tutor_name]) for i in Tutor.objects.all()]
+class ChooseTutor(forms.Form):
+    field = forms.ChoiceField(widget = forms.Select,choices = Tutors)

@@ -7,12 +7,33 @@ from .models import Tutor, Majors, Courses
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
-from .forms import NewUserForm, TutorForm
+from .forms import NewUserForm, TutorForm,ChooseTutor
+def Reserve(request):
+    Tutors = []
+    majors = []
+    courses = []
+    for i in Tutor.objects.all():
+        Tutors.append(i)
+    for i in Majors.objects.all():
+        majors.append(i)
+    for i in Courses.objects.all():
+        courses.append(i)
+    if request.method == 'POST':
+        form = ChooseTutor(request.POST)
+        if form.is_valid():
+            return HttpResponse("You have Successfully choosed a Tutor ")
+    else :
+        form = ChooseTutor()
+    return render(request,"main/reserve.html",{'form':form})
+def Recommend(request):
+    return HttpResponse("Recommend")
+def profile(request):
+    return render(request,template_name= "main/profile.html")
 def Tutors_url(request):
-    return render(request, template_name='main/tutors.html',context = {"Tutors":  Tutor.objects.all})
+    return render(request, template_name='main/tutors.html',context = {"Tutors": Tutor.objects.all})
 def Courses_url(request):
-    return render(request, template_name='main/courses.html',context = {"Courses" :Courses.objects.all,"request":request})
-def single_slug(request, single_slug):
+    return render(request, template_name='main/courses.html',context = {"Courses": Courses.objects.all,"request":request})
+def single_slug(request,single_slug):
     Tutors = [m.Tutors_slug  for m in Majors.objects.all()]
     if single_slug in Tutors:
         return HttpResponse("Hello")
@@ -79,5 +100,3 @@ def BecomeaTutor(request):
                 print(form.error_messages[msg])
     form = TutorForm
     return render(request,"main/become_a_tutor.html",context = {"form":form})
-def Tutor(request, Major):
-    return render(request,"main/tutors.html",context = {"majors":Majors.objects.all})

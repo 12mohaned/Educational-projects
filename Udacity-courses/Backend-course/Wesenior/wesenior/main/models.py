@@ -14,10 +14,9 @@ class Majors(models.Model):
         return self.Major_name
 
 class Courses(models.Model):
+    Course_Code = models.CharField(max_length = 100)
     Course_name = models.CharField(max_length =200)
     Course_content = models.TextField()
-    Reserve_slug= models.CharField(max_length =200)
-    Recommend_slug = models.CharField(max_length =200)
     Majorname  = models.ForeignKey(Majors,verbose_name = "Majors")
     class Meta :
         verbose_name_plural = "Courses"

@@ -40,4 +40,9 @@ urlpatterns = [
     url("MGT/Courses/reserve/<str:coursecode>/",views.course_reserve,name = "MGTReserveCourses"),
     url("PBT/Courses/reserve/<str:coursecode>/",views.course_reserve,name = "PBTReserveCourses"),
     url("AAS/Courses/reserve/<str:coursecode>/",views.course_reserve,name = "AASReserveCourses"),
+    url("MET/Courses/Recommend/<str:coursecode>/",views.course_recommend,name = "METRecommend"),
+    url("MGT/Courses/Recommend/<str:coursecode>/",views.course_recommend,name = "MGTRecommend"),
+    url("PBT/Courses/Recommend/<str:coursecode>/",views.course_recommend,name = "PBTRecommend"),
+    url("AAS/Courses/Recommend/<str:coursecode>/",views.course_recommend,name = "AASRecommend"),
+    
 ]

@@ -39,7 +39,12 @@ def course_reserve(request,coursecode):
         return HttpResponse("404 Non Matching Url")
     return render(request,template_name = "main/AvailableTutors.html",context = {"Course" :Courses.objects.all,
     "ChoosenCourse":ChoosenCourse,"Tutor":Tutor.objects.all})
-
+def course_recommend(request,coursecode):
+    Recommendedcourse = Courses.objects.get(Course_Code = coursecode)
+    if(Recommendedcourse is None):
+        return redirect();
+    return render(request,template_name ="main/RecommendCourses.html",context = {"Course":Courses.objects.all,
+    "Recommendedcourse":Recommendedcourse})
 def homepage(request):
         return render(request = request,template_name = 'main/home.html',
                   context ={"majors":Majors.objects.all})

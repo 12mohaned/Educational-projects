@@ -28,7 +28,7 @@ def Reserve(request):
 def Recommend(request):
     return HttpResponse("Recommend")
 def profile(request):
-    return render(request,template_name= "main/profile.html")
+    return render(request,template_name= "main/Baseprofile.html")
 def Tutors_url(request):
     return render(request, template_name='main/tutors.html',context = {"Tutors": Tutor.objects.all})
 def Courses_url(request):

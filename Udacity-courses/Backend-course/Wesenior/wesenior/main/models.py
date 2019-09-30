@@ -33,3 +33,9 @@ class Tutor(models.Model):
         return self.tutor_name
     #def __str__(self):
     #    return "Number of Available Tutors for " + self.Major_name + " is " + str(self.number_of_Tutors)
+class CoursesName(models.Model):
+    course_name= models.ForeignKey(Courses,verbose_name = "Courses",on_delete=models.CASCADE,default = "")
+    tutor_name = models.ForeignKey(Tutor,verbose_name = "Tutors",on_delete=models.CASCADE,default = "")
+    Major_name = models.ForeignKey(Majors,verbose_name = "Majors",on_delete=models.CASCADE,default = "")
+    def __str__(self):
+        return self.course_name.Course_name

@@ -41,7 +41,7 @@ public class Launch {
 	counter++;
 	}
 	}
-	System.out.println(Problems_Solved);
+	System.out.println(Problems_Solved.size());
 	}
 }
 

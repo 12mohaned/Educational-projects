@@ -28,22 +28,23 @@ def Reserve(request):
 def Recommend(request):
     return HttpResponse("Recommend")
 def profile(request):
-    return render(request,template_name= "main/profile.html")
+    return render(request,template_name= "main/Baseprofile.html")
 def Tutors_url(request):
     return render(request, template_name='main/tutors.html',context = {"Tutors": Tutor.objects.all})
 def Courses_url(request):
     return render(request, template_name='main/courses.html',context = {"Courses": Courses.objects.all,"request":request})
-def single_slug(request,single_slug):
-    Tutors = [m.Tutors_slug  for m in Majors.objects.all()]
-    if single_slug in Tutors:
-        return HttpResponse("Hello")
-    else :
-        return HttpResponse("Bye")
-    courses = [c.Courses_slug for c in Majors.objects.all()]
-    if single_slug in courses:
-        return HttpResponse("Bello")
-    else :
-        return HttpResponse("Bye")
+def course_reserve(request,coursecode):
+    ChoosenCourse = Courses.objects.get(Course_Code = coursecode)
+    if(ChoosenCourse == None):
+        return HttpResponse("404 Non Matching Url")
+    return render(request,template_name = "main/AvailableTutors.html",context = {"Course" :Courses.objects.all,
+    "ChoosenCourse":ChoosenCourse,"Tutor":Tutor.objects.all})
+def course_recommend(request,coursecode):
+    Recommendedcourse = Courses.objects.get(Course_Code = coursecode)
+    if(Recommendedcourse is None):
+        return redirect();
+    return render(request,template_name ="main/RecommendCourses.html",context = {"Course":Courses.objects.all,
+    "Recommendedcourse":Recommendedcourse})
 def homepage(request):
         return render(request = request,template_name = 'main/home.html',
                   context ={"majors":Majors.objects.all})

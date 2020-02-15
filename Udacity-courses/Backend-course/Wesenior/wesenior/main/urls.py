@@ -36,4 +36,13 @@ urlpatterns = [
     url("PBT/Tutors",views.Tutors_url,name= "PBTTutorsURL"),
     url("AAS/Tutors",views.Tutors_url,name= "AASTutorsURL"),
     url("MGT/Tutors",views.Tutors_url,name= "MGTTutorsURL"),
+    url("MET/Courses/reserve/<str:coursecode>/",views.course_reserve,name = "METReserveCourses"),
+    url("MGT/Courses/reserve/<str:coursecode>/",views.course_reserve,name = "MGTReserveCourses"),
+    url("PBT/Courses/reserve/<str:coursecode>/",views.course_reserve,name = "PBTReserveCourses"),
+    url("AAS/Courses/reserve/<str:coursecode>/",views.course_reserve,name = "AASReserveCourses"),
+    url("MET/Courses/Recommend/<str:coursecode>/",views.course_recommend,name = "METRecommend"),
+    url("MGT/Courses/Recommend/<str:coursecode>/",views.course_recommend,name = "MGTRecommend"),
+    url("PBT/Courses/Recommend/<str:coursecode>/",views.course_recommend,name = "PBTRecommend"),
+    url("AAS/Courses/Recommend/<str:coursecode>/",views.course_recommend,name = "AASRecommend"),
+    
 ]

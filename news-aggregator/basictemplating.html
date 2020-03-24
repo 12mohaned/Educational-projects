@@ -1,0 +1,31 @@
+<!DOCTYPE html> 
+<html>
+        <head>
+                <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+                <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+                <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+            </head>
+<div id ="div1" >
+<table id ="table1" class ="display">
+    <thead>
+        <th> Link </th>
+        <th> Category </th>
+    </thead>
+    <tbody>
+        {{ range $Value := .Link }}
+        <tr>
+            <td><a href ="{{$Value}}" target="_blank" >{{ $Value }}</a></td>
+            <td>Business</td>
+        </tr>
+        {{ end }}
+    </tbody>
+</table>
+</div>
+
+<script>
+$(document).ready( function () {
+    $('#table1').DataTable();
+} );
+</script>
+
+</html>

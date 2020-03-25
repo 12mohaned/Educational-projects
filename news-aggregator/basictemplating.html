@@ -1,5 +1,6 @@
 <!DOCTYPE html> 
 <html>
+        {{$newspaper := .NewsPaper }}
         <head>
                 <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
                 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
@@ -11,11 +12,13 @@
         <th> Link </th>
         <th> Category </th>
     </thead>
+    
     <tbody>
         {{ range $Value := .Link }}
         <tr>
             <td><a href ="{{$Value}}" target="_blank" >{{ $Value }}</a></td>
-            <td>Business</td>
+    
+            <td>{{$newspaper}}</td>
         </tr>
         {{ end }}
     </tbody>

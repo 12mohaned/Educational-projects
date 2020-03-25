@@ -6,7 +6,10 @@ import (
 	"net/http"
 	"strings"
 )
-
+type RecentNews struct{
+Link [3] string
+NewsPaper string
+}
 type NewsForm struct {
 	Link [] string
 	NewsPaper string
@@ -25,11 +28,11 @@ return the top 3 Recent News in the RecentNews Page
 */
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	var news Sitemapindex
-	var RecentNews News
+	var sub_news News
 	var nyTimes_link string = "https://www.nytimes.com/sitemaps/new/sitemap.xml.gz"
-	// var TopNews[] string
+	var TopNews[3] string
+	var i int32
 
-	// var i int32
 	resp,_ := http.Get(nyTimes_link)
 	bytes,_ := ioutil.ReadAll(resp.Body)
 	xml.Unmarshal(bytes,&news)
@@ -37,13 +40,18 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 
 	resp,_ = http.Get(news.Locations[0])
 	bytes,_ = ioutil.ReadAll(resp.Body)
-	xml.Unmarshal(bytes, &RecentNews)
+	xml.Unmarshal(bytes, &sub_news)
 	resp.Body.Close()
 
-	Page := NewsForm{ Link: RecentNews.Locations, NewsPaper: "NeyWork Times" }
+	for i=0; i < 3;i++{
+	TopNews[i] = sub_news.Locations[i]
+	}
+
+	Page := RecentNews{ Link : TopNews, NewsPaper: "NeyWork Times" }
 	template,_:= template.ParseFiles("Home.html")
 	template.Execute(w,Page)
 }
+
 /*
 Responsible for Generating SiteMaps of WashigntonPost on following topics ex :
 Business, Entertainment, technology, world
@@ -72,9 +80,7 @@ func washingtonpostAggregateHandler(w http.ResponseWriter, r *http.Request) {
 Responsible for Generating SiteMaps of Ny-Times on following topics ex :
 Business, Entertainment, technology, world
 */
-
 func newyorkTimesAggregateHandler(w http.ResponseWriter, r *http.Request){
-
 	var nyTimes Sitemapindex
 	var nyTimes_news News
 	var nyTimes_link string = "https://www.nytimes.com/sitemaps/new/sitemap.xml.gz"
@@ -90,7 +96,6 @@ func newyorkTimesAggregateHandler(w http.ResponseWriter, r *http.Request){
 	Page := NewsForm{ Link: nyTimes_news.Locations, NewsPaper : "NewYorkTimes" }
 	t, _ := template.ParseFiles("basictemplating.html")
 	t.Execute(w, Page)
-
 }
 
 func main() {

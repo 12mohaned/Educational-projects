@@ -6,11 +6,11 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
-	"time"
 )
 
 type NewsForm struct {
 	Link [] string
+	NewsPaper string
 }
 
 type Sitemapindex struct {
@@ -24,22 +24,50 @@ type News struct {
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "<h1>There is nothing here but a blank page go to the news</h1>")
 }
-
-func AggregateHandler(w http.ResponseWriter, r *http.Request) {
-
-	var mainsitemap Sitemapindex
-	var news News
-	var Washignton_post string = "https://www.washingtonpost.com/sitemaps/index.xml"
-	resp, _ := http.Get(Washignton_post)
+/*
+Responsible for Generating SiteMaps of WashigntonPost on following topics ex :
+Business, Entertainment, technology, world
+*/
+func washingtonpostAggregateHandler(w http.ResponseWriter, r *http.Request) {
+	var washingtmainsitemap Sitemapindex
+	var washington_news News
+	var Washignton_link string = "https://www.washingtonpost.com/sitemaps/index.xml"
+	resp, _ := http.Get(Washignton_link)
 	bytes, _ := ioutil.ReadAll(resp.Body)
-	xml.Unmarshal(bytes, &mainsitemap)
+	xml.Unmarshal(bytes, &washingtmainsitemap)
 	resp.Body.Close()
-	resp, _ = http.Get(strings.TrimSpace(mainsitemap.Locations[0]))
-	bytes, _ = ioutil.ReadAll(resp.Body)
-	xml.Unmarshal(bytes, &news)
-	resp.Body.Close()			
+	var i int
+	for i =0; i < len(washingtmainsitemap.Locations);i++{
+		resp, _ = http.Get(strings.TrimSpace(washingtmainsitemap.Locations[i]))
+		bytes, _ = ioutil.ReadAll(resp.Body)
+		xml.Unmarshal(bytes, &washington_news)
+	}			
+	resp.Body.Close()
+	Page := NewsForm{ Link: washington_news.Locations, NewsPaper : "washingtonpost"}
+	t, _ := template.ParseFiles("basictemplating.html")
+	t.Execute(w, Page)
+}
 
-	Page := NewsForm{ Link: news.Locations }
+/*
+Responsible for Generating SiteMaps of Ny-Times on following topics ex :
+Business, Entertainment, technology, world
+*/
+
+func newyorkTimesAggregateHandler(w http.ResponseWriter, r *http.Request){
+
+	var nyTimes Sitemapindex
+	var nyTimes_news News
+	var nyTimes_link string = "https://www.nytimes.com/sitemaps/new/sitemap.xml.gz"
+	resp, _ := http.Get(nyTimes_link)
+	bytes, _ := ioutil.ReadAll(resp.Body)
+	xml.Unmarshal(bytes, &nyTimes)
+	resp.Body.Close()
+	
+	resp, _ = http.Get(strings.TrimSpace(nyTimes.Locations[0]))
+	bytes, _ = ioutil.ReadAll(resp.Body)
+	xml.Unmarshal(bytes, &nyTimes_news)
+	resp.Body.Close()
+	Page := NewsForm{ Link: nyTimes_news.Locations, NewsPaper : "NewYorkTimes" }
 	t, _ := template.ParseFiles("basictemplating.html")
 	t.Execute(w, Page)
 
@@ -47,7 +75,7 @@ func AggregateHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc("/Home",indexHandler)
-	http.HandleFunc("/news", AggregateHandler)
+	http.HandleFunc("/washingtonpost", washingtonpostAggregateHandler)
+	http.HandleFunc("/nytimes",newyorkTimesAggregateHandler)
 	http.ListenAndServe(":8000", nil)
- 
 }

@@ -1,6 +1,5 @@
 package main
 import (
-	"fmt"
 	"html/template"
 	"encoding/xml"
 	"io/ioutil"
@@ -21,8 +20,29 @@ type News struct {
 	Locations []string `xml:"url>loc"`
 }
 
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "<h1>There is nothing here but a blank page go to the news</h1>")
+/*
+return the top 3 Recent News in the RecentNews Page
+*/
+func HomeHandler(w http.ResponseWriter, r *http.Request) {
+	var news Sitemapindex
+	var RecentNews News
+	var nyTimes_link string = "https://www.nytimes.com/sitemaps/new/sitemap.xml.gz"
+	// var TopNews[] string
+
+	// var i int32
+	resp,_ := http.Get(nyTimes_link)
+	bytes,_ := ioutil.ReadAll(resp.Body)
+	xml.Unmarshal(bytes,&news)
+	resp.Body.Close()
+
+	resp,_ = http.Get(news.Locations[0])
+	bytes,_ = ioutil.ReadAll(resp.Body)
+	xml.Unmarshal(bytes, &RecentNews)
+	resp.Body.Close()
+
+	Page := NewsForm{ Link: RecentNews.Locations, NewsPaper: "NeyWork Times" }
+	template,_:= template.ParseFiles("Home.html")
+	template.Execute(w,Page)
 }
 /*
 Responsible for Generating SiteMaps of WashigntonPost on following topics ex :
@@ -74,7 +94,7 @@ func newyorkTimesAggregateHandler(w http.ResponseWriter, r *http.Request){
 }
 
 func main() {
-	http.HandleFunc("/Home",indexHandler)
+	http.HandleFunc("/Home",HomeHandler)
 	http.HandleFunc("/washingtonpost", washingtonpostAggregateHandler)
 	http.HandleFunc("/nytimes",newyorkTimesAggregateHandler)
 	http.ListenAndServe(":8000", nil)

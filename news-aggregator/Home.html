@@ -22,7 +22,10 @@
                  </ul>
             </div>
             </nav>
-      
-<p>{{ .Link }}</p>
-
+            <div>
+      <h5>Recent News :</h5>
+        {{ range $Source := .Link }}
+      <h6><a href = "{{$Source}}">{{ $Source }}</a></h6>  
+      {{ end }}
+</div>
 </html>

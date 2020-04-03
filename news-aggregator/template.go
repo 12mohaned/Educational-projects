@@ -1,17 +1,23 @@
 package main
+
 import (
-	"html/template"
 	"encoding/xml"
+	"html/template"
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"sync"
 )
-type RecentNews struct{
-Link [3] string
-NewsPaper string
+
+var waitgroup sync.WaitGroup
+var washington_news News
+
+type RecentNews struct {
+	Link      [5]string
+	NewsPaper string
 }
 type NewsForm struct {
-	Link [] string
+	Link      []string
 	NewsPaper string
 }
 
@@ -30,26 +36,34 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	var news Sitemapindex
 	var sub_news News
 	var nyTimes_link string = "https://www.nytimes.com/sitemaps/new/sitemap.xml.gz"
-	var TopNews[3] string
+	var TopNews [5]string
 	var i int32
 
-	resp,_ := http.Get(nyTimes_link)
-	bytes,_ := ioutil.ReadAll(resp.Body)
-	xml.Unmarshal(bytes,&news)
+	resp, _ := http.Get(nyTimes_link)
+	bytes, _ := ioutil.ReadAll(resp.Body)
+	xml.Unmarshal(bytes, &news)
 	resp.Body.Close()
 
-	resp,_ = http.Get(news.Locations[0])
-	bytes,_ = ioutil.ReadAll(resp.Body)
+	resp, _ = http.Get(news.Locations[0])
+	bytes, _ = ioutil.ReadAll(resp.Body)
 	xml.Unmarshal(bytes, &sub_news)
 	resp.Body.Close()
 
-	for i=0; i < 3;i++{
-	TopNews[i] = sub_news.Locations[i]
+	for i = 0; i < 5; i++ {
+		TopNews[i] = sub_news.Locations[i]
 	}
 
-	Page := RecentNews{ Link : TopNews, NewsPaper: "NeyWork Times" }
-	template,_:= template.ParseFiles("Home.html")
-	template.Execute(w,Page)
+	Page := RecentNews{Link: TopNews, NewsPaper: "NeyWork Times"}
+	template, _ := template.ParseFiles("Home.html")
+	template.Execute(w, Page)
+}
+
+func NewsRoutine(Location string) {
+	defer waitgroup.Done()
+	resp, _ := http.Get(strings.TrimSpace(Location))
+	bytes, _ := ioutil.ReadAll(resp.Body)
+	xml.Unmarshal(bytes, &washington_news)
+	resp.Body.Close()
 }
 
 /*
@@ -58,20 +72,18 @@ Business, Entertainment, technology, world
 */
 func washingtonpostAggregateHandler(w http.ResponseWriter, r *http.Request) {
 	var washingtmainsitemap Sitemapindex
-	var washington_news News
 	var Washignton_link string = "https://www.washingtonpost.com/sitemaps/index.xml"
 	resp, _ := http.Get(Washignton_link)
 	bytes, _ := ioutil.ReadAll(resp.Body)
 	xml.Unmarshal(bytes, &washingtmainsitemap)
 	resp.Body.Close()
 	var i int
-	for i =0; i < len(washingtmainsitemap.Locations);i++{
-		resp, _ = http.Get(strings.TrimSpace(washingtmainsitemap.Locations[i]))
-		bytes, _ = ioutil.ReadAll(resp.Body)
-		xml.Unmarshal(bytes, &washington_news)
-	}			
-	resp.Body.Close()
-	Page := NewsForm{ Link: washington_news.Locations, NewsPaper : "washingtonpost"}
+	for i = 0; i < len(washingtmainsitemap.Locations); i++ {
+		waitgroup.Add(1)
+		go NewsRoutine(washingtmainsitemap.Locations[i])
+	}
+	waitgroup.Wait()
+	Page := NewsForm{Link: washington_news.Locations, NewsPaper: "washingtonpost"}
 	t, _ := template.ParseFiles("basictemplating.html")
 	t.Execute(w, Page)
 }
@@ -80,7 +92,7 @@ func washingtonpostAggregateHandler(w http.ResponseWriter, r *http.Request) {
 Responsible for Generating SiteMaps of Ny-Times on following topics ex :
 Business, Entertainment, technology, world
 */
-func newyorkTimesAggregateHandler(w http.ResponseWriter, r *http.Request){
+func newyorkTimesAggregateHandler(w http.ResponseWriter, r *http.Request) {
 	var nyTimes Sitemapindex
 	var nyTimes_news News
 	var nyTimes_link string = "https://www.nytimes.com/sitemaps/new/sitemap.xml.gz"
@@ -88,19 +100,20 @@ func newyorkTimesAggregateHandler(w http.ResponseWriter, r *http.Request){
 	bytes, _ := ioutil.ReadAll(resp.Body)
 	xml.Unmarshal(bytes, &nyTimes)
 	resp.Body.Close()
-	
+
 	resp, _ = http.Get(strings.TrimSpace(nyTimes.Locations[0]))
 	bytes, _ = ioutil.ReadAll(resp.Body)
 	xml.Unmarshal(bytes, &nyTimes_news)
 	resp.Body.Close()
-	Page := NewsForm{ Link: nyTimes_news.Locations, NewsPaper : "NewYorkTimes" }
+
+	Page := NewsForm{Link: nyTimes_news.Locations, NewsPaper: "NewYorkTimes"}
 	t, _ := template.ParseFiles("basictemplating.html")
 	t.Execute(w, Page)
 }
 
 func main() {
-	http.HandleFunc("/Home",HomeHandler)
+	http.HandleFunc("/Home", HomeHandler)
 	http.HandleFunc("/washingtonpost", washingtonpostAggregateHandler)
-	http.HandleFunc("/nytimes",newyorkTimesAggregateHandler)
+	http.HandleFunc("/nytimes", newyorkTimesAggregateHandler)
 	http.ListenAndServe(":8000", nil)
 }

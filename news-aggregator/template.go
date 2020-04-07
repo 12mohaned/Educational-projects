@@ -15,7 +15,7 @@ var waitgroup sync.WaitGroup
 var washington_news News
 
 type RecentNews struct {
-	Link  [5]string
+	Link  string
 	Title string
 }
 type NewsForm struct {
@@ -31,15 +31,18 @@ type News struct {
 	Locations []string `xml:"url>loc"`
 }
 
+type RecentSuperNews struct {
+	Article [5]RecentNews
+}
+
 /*
-return the top 3 Recent News in the RecentNews Page
+return the top 5 Recent News in the RecentNews Page
 */
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	var news Sitemapindex
 	var sub_news News
 	var nyTimes_link string = "https://www.nytimes.com/sitemaps/new/sitemap.xml.gz"
-	var TopNews [5]string
-	var Title [5]string
+	var News [5]RecentNews
 	var i int32
 
 	resp, _ := http.Get(nyTimes_link)
@@ -53,15 +56,28 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	resp.Body.Close()
 
 	for i = 0; i < 5; i++ {
-		TopNews[i] = sub_news.Locations[i]
-		NewsRoutine(TopNews[i])
-		var title string = StoreTitle(TopNews[i])
+
+		waitgroup.Add(1)
+		go NewsRoutine(sub_news.Locations[i])
+		var title string = StoreTitle(sub_news.Locations[i])
+		if title != "error" {
+			RN := RecentNews{Link: sub_news.Locations[i], Title: title}
+			News[i] = RN
+
+		} else {
+			panic("This News Paper Doesn't Have a Title")
+		}
 	}
-	Page := RecentNews{Link: TopNews, Title: "Ny-Times"}
+	waitgroup.Wait()
+
+	Page := RecentSuperNews{Article: News}
 	template, _ := template.ParseFiles("Home.html")
 	template.Execute(w, Page)
 }
 
+/*
+Return the Array washington_news which contains Link to all the Articles
+*/
 func NewsRoutine(Location string) {
 	defer waitgroup.Done()
 	resp, _ := http.Get(strings.TrimSpace(Location))
@@ -70,15 +86,28 @@ func NewsRoutine(Location string) {
 	resp.Body.Close()
 }
 
+/*
+Store the Title of a Newspaper
+*/
 func StoreTitle(Location string) string {
 	resp, _ := http.Get(strings.TrimSpace(Location))
 	z := html.NewTokenizer(resp.Body)
 	for {
 		tt := z.Next()
-		if tt == html.ErrorToken {
-			return "nil"
+		switch {
+		case tt == html.ErrorToken:
+			return "error"
+		case tt == html.StartTagToken:
+			token := z.Token()
+			if "title" == token.Data {
+				tt = z.Next()
+				if tt == html.TextToken {
+					return z.Token().Data
+				}
+			}
 		}
 	}
+
 }
 
 /*
@@ -127,8 +156,8 @@ func newyorkTimesAggregateHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/Home", HomeHandler)
+	http.HandleFunc("/News", HomeHandler)
 	http.HandleFunc("/washingtonpost", washingtonpostAggregateHandler)
 	http.HandleFunc("/nytimes", newyorkTimesAggregateHandler)
-	http.ListenAndServe(":8000", nil)
+	http.ListenAndServe(":8080", nil)
 }

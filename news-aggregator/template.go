@@ -7,14 +7,16 @@ import (
 	"net/http"
 	"strings"
 	"sync"
+
+	"golang.org/x/net/html"
 )
 
 var waitgroup sync.WaitGroup
 var washington_news News
 
 type RecentNews struct {
-	Link      [5]string
-	NewsPaper string
+	Link  [5]string
+	Title string
 }
 type NewsForm struct {
 	Link      []string
@@ -37,6 +39,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	var sub_news News
 	var nyTimes_link string = "https://www.nytimes.com/sitemaps/new/sitemap.xml.gz"
 	var TopNews [5]string
+	var Title [5]string
 	var i int32
 
 	resp, _ := http.Get(nyTimes_link)
@@ -51,9 +54,10 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 
 	for i = 0; i < 5; i++ {
 		TopNews[i] = sub_news.Locations[i]
+		NewsRoutine(TopNews[i])
+		var title string = StoreTitle(TopNews[i])
 	}
-
-	Page := RecentNews{Link: TopNews, NewsPaper: "NeyWork Times"}
+	Page := RecentNews{Link: TopNews, Title: "Ny-Times"}
 	template, _ := template.ParseFiles("Home.html")
 	template.Execute(w, Page)
 }
@@ -64,6 +68,17 @@ func NewsRoutine(Location string) {
 	bytes, _ := ioutil.ReadAll(resp.Body)
 	xml.Unmarshal(bytes, &washington_news)
 	resp.Body.Close()
+}
+
+func StoreTitle(Location string) string {
+	resp, _ := http.Get(strings.TrimSpace(Location))
+	z := html.NewTokenizer(resp.Body)
+	for {
+		tt := z.Next()
+		if tt == html.ErrorToken {
+			return "nil"
+		}
+	}
 }
 
 /*

@@ -1,6 +1,6 @@
 Projects Made on Online Learning Platforms like Udacity and PythonProgramming.net,Edx,etc...
 
-These Projects Are Made for the Intend of Learning only and below is the Description of Each Project :- 
+These Projects Are Made for the Intend of Learning only, below is the Description of Each Project :- 
 
 #news-Aggregator :
 a Server built in Go which pull News from Online Newspaper to keep one updated about daily news 
